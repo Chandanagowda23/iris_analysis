@@ -1,0 +1,83 @@
+
+```{r setup, results="hide", warning=F, message=F}
+#LIBRARY'S
+library(tidyverse)
+library(plotly)
+library(data.table)
+library(ggplot2)
+library(maps)
+library(dplyr)
+library(tidyr)
+library(lubridate)
+```
+
+Iris Dataset
+
+> "The Iris flower data set or Fisher's Iris data set is a multivariate data set 
+> introduced by the British statistician and biologist Ronald Fisher in his 1936 
+> paper The use of multiple measurements in taxonomic problems as an example of 
+> linear discriminant analysis" <https://en.wikipedia.org/wiki/Iris_flower_data_set>
+
+
+```{r}
+#  Read the iris.csv file  (2 points)
+data_iris = fread("iris.csv")
+```
+
+```{r}
+# Show some values from data frame (2 points)
+head(data_iris)
+
+```
+
+
+```{r}
+hist_iris.1 = plot_ly(data_iris, x = ~Sepal.Length, color = ~Species, type = "histogram")
+hist_iris.1
+
+```
+
+```{r}
+ggplot_hist_iris = ggplot(data_iris, aes(x = Sepal.Length, fill = Species)) +
+  geom_histogram(position = "dodge",binwidth = 0.25)
+
+ggplot_hist_iris
+```
+
+```{r}
+#Formating the dataframe
+data_iris.new_format = data_iris %>%
+  pivot_longer(-Species, names_to = "Metric", values_to = "value")
+
+#Plotting
+ggplot(data_iris.new_format, aes(x=value, fill = Species)) + facet_wrap(factor(data_iris.new_format$Metric)) +
+  geom_histogram(position = "dodge")
+```
+
+
+```{r}
+data_iris.new_format$interact_feild = interaction(data_iris.new_format$Species, data_iris.new_format$Metric, sep="." )
+ggplot(data_iris.new_format, aes(x = value, fill = Species, y = interact_feild))+ geom_boxplot()+ labs(y = "interaction(Species, metric)", x = "value")
+
+```
+
+```{r}
+ ggplot(data_iris, aes(x = Petal.Length, color = Species, y = Petal.Width))+
+    geom_point()
+```
+
+
+
+```{r}
+
+plot_ly(data_iris, x = ~Petal.Length,y = ~Petal.Width, z = ~Sepal.Length, color = ~Species)
+  
+```
+
+
+The Iris data set helps to distinguish between the species by its features like Petal.Length,Petal.Width,Sepal.Length,Sepal.width. By above procedure we can clearly see that petal length classifies the data set well and sepal width classify the least. Even if we check the co-effients of each features it confirms the same.
+To conclude, the 4 features of flower helps us the classify the dataset into setosa, versicolor and virginca clearly.
+
+
+
+
